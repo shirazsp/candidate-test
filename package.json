@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@integrity_applications/private-glucotrack-sdk": "^0.0.5",
     "@types/expect": "^24.3.0",
     "@types/selenium-webdriver": "^4.0.16",
     "axios": "^0.21.4",
