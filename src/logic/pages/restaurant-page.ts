@@ -1,23 +1,19 @@
-import { By } from "selenium-webdriver";
-import { ClickableElement } from "../elements/clickable-element";
-import { Browser } from "../../infra/driver-wrapper/browser";
-import { CreateNewRestaurantPopUp } from "../popups/create-new-restaurant-popup";
-import { extend } from "lodash";
-import { PageBase } from "../../infra/pages-infra/page-base";
+import { Page } from "playwright";
+import { PageBase } from "./page-base";
 
-class RestaurantPage extends PageBase {
+const CREATE_NEW_RESTURANT_BUTTON = "//button[contains(text(),'Create new')]";
+const POPUP_TITLE = "//h2[contains(text(),'Create new restaurant')]"
 
-    private createNewRestaurantButtonLocator = "//button[text()='Create new']"
+export class RestaurantPage extends PageBase {
 
-    constructor(browser: Browser) {
-        super(browser);
+    constructor(page: Page) {
+        super(page);
     }
 
-    async openCreateRestaurantPopup() {
-        const button = await this.browser.findElement(ClickableElement, By.xpath(this.createNewRestaurantButtonLocator));
-        button.click();
-        return new CreateNewRestaurantPopUp(this.browser);
+    clickreateNewRestaurantButtone = async () => {
+        await this.page.click(CREATE_NEW_RESTURANT_BUTTON);
+    }
+    checkIfTitleInPopupExcit = async () => {
+        return await this.page.isVisible(POPUP_TITLE);
     }
 }
-
-export { RestaurantPage }
