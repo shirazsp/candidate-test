@@ -24,6 +24,7 @@ interface RequestConfig {
   method: HttpMethod
   body?: object
   queryParams?: object
+  pathParams?: string
   headers?: Record<string, string>
   timeout?: number
   autoRefreshToken?: boolean,
@@ -45,7 +46,20 @@ const networkRequest = async<T>(config: RequestConfig): Promise<ApiResponse<T>> 
   // Correlation id is used inside services to follow the request when it passes inside the system
   headers['X-Correlation-Id'] = uuidv4()
 
-  const url = config.queryParams ? urljoin(config.url, `?${qs.stringify(config.queryParams)}`) : config.url
+  const url = function () {
+    let tempUrl = config.url;
+    if (config.pathParams) {
+      tempUrl = urljoin(tempUrl, `/${config.pathParams}`);
+    }
+
+    if (config.queryParams) {
+      tempUrl = urljoin(tempUrl, `?${qs.stringify(config.queryParams)}`);
+    }
+
+    return tempUrl;
+  }();
+
+
   const body = config.body ? JSON.stringify(config.body) : undefined
   const abortController = new AbortController()
   const response: Response = await Promise.race([
