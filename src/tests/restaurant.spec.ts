@@ -7,7 +7,7 @@ import restaurantsAPI from '../logic/REST/restaurantsAPI';
 
 describe('Restaurants tests', () => {
 
-    before('Reset restaurant server', async () => {
+    beforeEach('Reset restaurant server', async () => {
         //Arrange
         await restaurantsAPI.resetServer();
     })
