@@ -1,6 +1,6 @@
 import { ApiResponse } from '../infra/rest/api-response';
 import { Restaurant } from '../logic/REST/API-Response/get-restaurants-response';
-import { expect } from 'chai';
+import { expect, assert } from 'chai';
 
 
 import restaurantsAPI from '../logic/REST/restaurantsAPI';
@@ -46,6 +46,21 @@ describe('Restaurants tests', () => {
         expect(getByIdResponse.status).to.equal(404);
     })
 
+    it('Delete exsisting restaurant', async () => {
+        //Arrange
+        const restauranteId = 233;
+        const myNewRest = { address: "My Addess 1", id: restauranteId, name: "My Restaurant", score: 2.3 };
+        const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
+        // if we can't create a restaurante there is no point to continue the test
+        assert.equal(createResponse.status, 201, "unable to create a restaurante");
+
+        //Act
+        const deleteByIdResponse = await restaurantsAPI.deleteRestaurantById(restauranteId);
+
+        //Assert
+        expect(deleteByIdResponse.success).to.be.true;
+        expect(deleteByIdResponse.status).to.equal(200);
+    })
 
 
 })
