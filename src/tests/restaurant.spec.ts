@@ -56,11 +56,25 @@ describe('Restaurants tests', () => {
 
         //Act
         const deleteByIdResponse = await restaurantsAPI.deleteRestaurantById(restauranteId);
+        const getByIdResponse = await restaurantsAPI.getRestaurantById(restauranteId);
 
         //Assert
         expect(deleteByIdResponse.success).to.be.true;
         expect(deleteByIdResponse.status).to.equal(200);
+        //make sure that the restauante doesn't exist
+        expect(getByIdResponse.error).to.equal("restaurant with given id not found");
+        expect(getByIdResponse.success).to.be.false;
+        expect(getByIdResponse.status).to.equal(404);
     })
 
+    it('Delete non exsisting restaurant', async () => {
+        //Act
+        const deleteByIdResponse = await restaurantsAPI.deleteRestaurantById(9999);
+
+        //Assert
+        expect(deleteByIdResponse.error).to.equal("restaurant with given id not found");
+        expect(deleteByIdResponse.success).to.be.false;
+        expect(deleteByIdResponse.status).to.equal(404);
+    })
 
 })
