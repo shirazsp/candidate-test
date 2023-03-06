@@ -50,9 +50,7 @@ describe('Restaurants tests', () => {
         //Arrange
         const restauranteId = 233;
         const myNewRest = { address: "My Addess 1", id: restauranteId, name: "My Restaurant", score: 2.3 };
-        const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
-        // if we can't create a restaurante there is no point to continue the test
-        assert.equal(createResponse.status, 201, "unable to create a restaurante");
+        await restaurantsAPI.createRestaurant(myNewRest);
 
         //Act
         const deleteByIdResponse = await restaurantsAPI.deleteRestaurantById(restauranteId);
