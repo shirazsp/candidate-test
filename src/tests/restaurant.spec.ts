@@ -90,9 +90,36 @@ describe('Restaurants tests', () => {
 
         //Assert
         expect(getByIdResponse.data?.address).to.equal(newAddress.address);
-        expect(getByIdResponse.success).to.be.true;
-        expect(getByIdResponse.status).to.equal(200);
+        expect(updateParamByIdResponse.success).to.be.true;
+        expect(updateParamByIdResponse.status).to.equal(200);
     })
+
+    it('Update all restaurant properties', async () => {
+        //Arrange
+        //create a new restaurante
+        const initId = 233;
+        const myNewRest = { address: "My Addess 1", id: 233, name: "My Restaurant", score: 2.3 };
+        const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
+        //new properties
+        const newId: number = 777;
+        const newProperties = { address: "My Addess 2", id: newId, name: "Yammy", score: 4.4 };
+
+        //Act
+        //update properties
+        const updateRestauantResponse = await restaurantsAPI.updatesRestaurant(initId, newProperties);
+        //get restaurante
+        const getByIdResponse: any = await restaurantsAPI.getRestaurantById(newId);
+
+        //Assert
+        expect(updateRestauantResponse.success).to.be.true;
+        expect(updateRestauantResponse.status).to.equal(200);
+
+        expect(getByIdResponse.data?.address).to.deep.equal(newProperties.address, "Restaurants address is not as expected");
+        expect(getByIdResponse.data?.id).to.deep.equal(newProperties.id, "Restaurants id is not as expected");
+        expect(getByIdResponse.data?.name).to.deep.equal(newProperties.name, "Restaurants name is not as expected");
+        expect(getByIdResponse.data?.score).to.deep.equal(newProperties.score, "Restaurants score is not as expected");
+    })
+
 
     it('Update non existing restaurante property', async () => {
         //Arrange
