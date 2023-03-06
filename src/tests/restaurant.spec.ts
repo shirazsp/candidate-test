@@ -1,6 +1,6 @@
 import { ApiResponse } from '../infra/rest/api-response';
 import { Restaurant } from '../logic/REST/API-Response/get-restaurants-response';
-import { expect, assert } from 'chai';
+import { expect } from 'chai';
 
 
 import restaurantsAPI from '../logic/REST/restaurantsAPI';
@@ -121,7 +121,7 @@ describe('Restaurants tests', () => {
     })
 
 
-    it('Update non existing restaurante property', async () => {
+    it('Update non existing restaurant property', async () => {
         //Arrange
         //create a new restaurante
         const restauranteId: number = 233;
