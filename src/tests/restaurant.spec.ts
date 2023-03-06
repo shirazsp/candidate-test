@@ -77,4 +77,23 @@ describe('Restaurants tests', () => {
         expect(deleteByIdResponse.status).to.equal(404);
     })
 
+    it('Update restaurant address', async () => {
+        //Arrange
+        //create a new restaurante
+        const restauranteId: number = 233;
+        const myNewRest = { address: "My Addess 1", id: restauranteId, name: "My Restaurant", score: 2.3 };
+        const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
+        //new address
+        const newAddress = { address: "My Address 2" };
+
+        //Act
+        const updateParamByIdResponse = await restaurantsAPI.updatesRestaurant(restauranteId, newAddress);
+        const getByIdResponse: any = await restaurantsAPI.getRestaurantById(restauranteId);
+
+        //Assert
+        expect(getByIdResponse.data?.address).to.equal(newAddress.address);
+        expect(getByIdResponse.success).to.be.true;
+        expect(getByIdResponse.status).to.equal(200);
+    })
+
 })

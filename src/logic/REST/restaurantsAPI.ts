@@ -27,4 +27,8 @@ const deleteRestaurantById = async (id: number): Promise<ApiResponse<null>> => {
     return HttpRequest.networkRequest({ url: baseUrl + 'restaurant', method: HttpRequest.HttpMethod.DELETE, pathParams: id.toString() });
 }
 
-export default { getRestaurants, resetServer, createRestaurant, getRestaurantById, deleteRestaurantById }
+const updatesRestaurant = async (id: number, paramToUpdate: Object): Promise<ApiResponse<null>> => {
+    return HttpRequest.networkRequest({ url: baseUrl + 'restaurant', method: HttpRequest.HttpMethod.PATCH, pathParams: id.toString(), body: paramToUpdate });
+}
+
+export default { getRestaurants, resetServer, createRestaurant, getRestaurantById, deleteRestaurantById, updatesRestaurant }
