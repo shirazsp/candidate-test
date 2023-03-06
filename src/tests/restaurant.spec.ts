@@ -108,4 +108,18 @@ describe('Restaurants tests', () => {
         expect(createResponse.status).to.equal(200);
     })
 
+    it('Create a new restaurant with existing id', async () => {
+        //Arrange
+        const myNewRest = { address: "My Addess 1", id: 233, name: "My Restaurant", score: 2.3 };
+        await restaurantsAPI.createRestaurant(myNewRest);
+
+        //Act
+        //add a new restaurante with the same id
+        const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
+
+        //Assert
+        expect(createResponse.success).to.be.false;
+        expect(createResponse.status).to.not.equal(200);
+    })
+
 })
