@@ -96,6 +96,25 @@ describe('Restaurants tests', () => {
         expect(getByIdResponse.status).to.equal(200);
     })
 
+    it('Update non existing restaurante property', async () => {
+        //Arrange
+        //create a new restaurante
+        const restauranteId: number = 233;
+        const myNewRest = { address: "My Addess 1", id: restauranteId, name: "My Restaurant", score: 2.3 };
+        const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
+
+        const newproperty = { chef: "Chaim Cohen" };
+
+        //Act
+        const updateParamByIdResponse = await restaurantsAPI.updatesRestaurant(restauranteId, newproperty);
+        const getByIdResponse = await restaurantsAPI.getRestaurantById(restauranteId);
+
+        //Assert
+        expect(getByIdResponse.data).to.not.have.property('chef');
+        expect(getByIdResponse.success).to.be.false;
+        expect(getByIdResponse.status).to.not.equal(200);
+    })
+
     it('Create a new restaurant', async () => {
         //Arrange
         const myNewRest = { address: "My Addess 1", id: 233, name: "My Restaurant", score: 2.3 };
