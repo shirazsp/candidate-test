@@ -6,6 +6,13 @@ import { expect } from 'chai';
 import restaurantsAPI from '../logic/REST/restaurantsAPI';
 
 describe('Restaurants tests', () => {
+    //global test data
+    const myNewRest = {
+        address: "My Addess 1",
+        id: 233,
+        name: "My Restaurant",
+        score: 2.3
+    };
 
     beforeEach('Reset restaurant server', async () => {
         //Arrange
@@ -24,7 +31,6 @@ describe('Restaurants tests', () => {
 
     it('Get restaurant by id', async () => {
         //Arrange
-        const myNewRest = { address: "My Addess 1", id: 233, name: "My Restaurant", score: 2.3 };
         const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
 
         //Act
@@ -48,13 +54,11 @@ describe('Restaurants tests', () => {
 
     it('Delete exsisting restaurant', async () => {
         //Arrange
-        const restauranteId = 233;
-        const myNewRest = { address: "My Addess 1", id: restauranteId, name: "My Restaurant", score: 2.3 };
         await restaurantsAPI.createRestaurant(myNewRest);
 
         //Act
-        const deleteByIdResponse = await restaurantsAPI.deleteRestaurantById(restauranteId);
-        const getByIdResponse = await restaurantsAPI.getRestaurantById(restauranteId);
+        const deleteByIdResponse = await restaurantsAPI.deleteRestaurantById(myNewRest.id);
+        const getByIdResponse = await restaurantsAPI.getRestaurantById(myNewRest.id);
 
         //Assert
         expect(deleteByIdResponse.success).to.be.true;
@@ -78,15 +82,16 @@ describe('Restaurants tests', () => {
     it('Update restaurant address', async () => {
         //Arrange
         //create a new restaurante
-        const restauranteId: number = 233;
-        const myNewRest = { address: "My Addess 1", id: restauranteId, name: "My Restaurant", score: 2.3 };
         const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
+
         //new address
         const newAddress = { address: "My Address 2" };
 
         //Act
-        const updateParamByIdResponse = await restaurantsAPI.updatesRestaurant(restauranteId, newAddress);
-        const getByIdResponse: any = await restaurantsAPI.getRestaurantById(restauranteId);
+        const updateParamByIdResponse =
+            await restaurantsAPI.updatesRestaurant(myNewRest.id, newAddress);
+        const getByIdResponse: any =
+            await restaurantsAPI.getRestaurantById(myNewRest.id);
 
         //Assert
         expect(getByIdResponse.data?.address).to.equal(newAddress.address);
@@ -97,42 +102,53 @@ describe('Restaurants tests', () => {
     it('Update all restaurant properties', async () => {
         //Arrange
         //create a new restaurante
-        const initId = 233;
-        const myNewRest = { address: "My Addess 1", id: 233, name: "My Restaurant", score: 2.3 };
         const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
-        //new properties
+
+        //new restaurant properties
         const newId: number = 777;
-        const newProperties = { address: "My Addess 2", id: newId, name: "Yammy", score: 4.4 };
+        const newProperties = {
+            address: "My Addess 2",
+            id: newId,
+            name: "Yammy",
+            score: 4.4
+        };
 
         //Act
         //update properties
-        const updateRestauantResponse = await restaurantsAPI.updatesRestaurant(initId, newProperties);
+        const updateRestauantResponse =
+            await restaurantsAPI.updatesRestaurant(myNewRest.id, newProperties);
         //get restaurante
-        const getByIdResponse: any = await restaurantsAPI.getRestaurantById(newId);
+        const getByIdResponse: any =
+            await restaurantsAPI.getRestaurantById(newId);
 
         //Assert
         expect(updateRestauantResponse.success).to.be.true;
         expect(updateRestauantResponse.status).to.equal(200);
 
-        expect(getByIdResponse.data?.address).to.deep.equal(newProperties.address, "Restaurants address is not as expected");
-        expect(getByIdResponse.data?.id).to.deep.equal(newProperties.id, "Restaurants id is not as expected");
-        expect(getByIdResponse.data?.name).to.deep.equal(newProperties.name, "Restaurants name is not as expected");
-        expect(getByIdResponse.data?.score).to.deep.equal(newProperties.score, "Restaurants score is not as expected");
+        expect(getByIdResponse.data?.address).to.deep.equal(
+            newProperties.address, "Restaurants address is not as expected");
+        expect(getByIdResponse.data?.id).to.deep.equal(
+            newProperties.id, "Restaurants id is not as expected");
+        expect(getByIdResponse.data?.name).to.deep.equal(
+            newProperties.name, "Restaurants name is not as expected");
+        expect(getByIdResponse.data?.score).to.deep.equal(
+            newProperties.score, "Restaurants score is not as expected");
     })
 
 
     it('Update non existing restaurant property', async () => {
         //Arrange
         //create a new restaurante
-        const restauranteId: number = 233;
-        const myNewRest = { address: "My Addess 1", id: restauranteId, name: "My Restaurant", score: 2.3 };
         const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
 
+        //new unexisted property
         const newproperty = { chef: "Chaim Cohen" };
 
         //Act
-        const updateParamByIdResponse = await restaurantsAPI.updatesRestaurant(restauranteId, newproperty);
-        const getByIdResponse = await restaurantsAPI.getRestaurantById(restauranteId);
+        const updateParamByIdResponse =
+            await restaurantsAPI.updatesRestaurant(myNewRest.id, newproperty);
+        const getByIdResponse =
+            await restaurantsAPI.getRestaurantById(myNewRest.id);
 
         //Assert
         expect(getByIdResponse.data).to.not.have.property('chef');
@@ -141,9 +157,6 @@ describe('Restaurants tests', () => {
     })
 
     it('Create a new restaurant', async () => {
-        //Arrange
-        const myNewRest = { address: "My Addess 1", id: 233, name: "My Restaurant", score: 2.3 };
-
         //Act
         const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
 
@@ -153,8 +166,7 @@ describe('Restaurants tests', () => {
     })
 
     it('Create a new restaurant with existing id', async () => {
-        //Arrange
-        const myNewRest = { address: "My Addess 1", id: 233, name: "My Restaurant", score: 2.3 };
+        //create a restaurant
         await restaurantsAPI.createRestaurant(myNewRest);
 
         //Act

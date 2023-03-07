@@ -30,9 +30,7 @@ describe('UI-API tests', () => {
 
         //Act
         //create a new restaurante
-        await resturantPage.clickreateNewRestaurantButtone();
-        await resturantPage.checkIfTitleInPopupExcit();
-        await resturantPage.fillPopupFieldsAndSubmit(
+        await resturantPage.createNewRestaurante(
             newRestaurantId,
             "The Happy Malawach",
             "Weizmann 135, Kfar Saba",

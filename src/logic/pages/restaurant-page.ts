@@ -33,7 +33,9 @@ export class RestaurantPage extends PageBase {
     checkIfTitleInPopupExcit = async () => {
         return await this.page.isVisible(POPUP_TITLE);
     }
-    fillPopupFieldsAndSubmit = async (id: number, name: string, address: string, score: number) => {
+    createNewRestaurant = async (id: number, name: string, address: string, score: number) => {
+        //click 'create new restauant' button
+        this.clickreateNewRestaurantButtone();
         let inputField;
         //fill 'id' field
         inputField = this.page.locator(POPUP_ID_FIELD);
