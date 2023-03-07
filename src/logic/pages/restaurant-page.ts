@@ -16,6 +16,9 @@ const POPUP_SUBMIT_BUTTON = "//button[contains(text(),'Submit')]";
 
 const CREATED_POPUP_TITLE = "//h2[contains(text(),'Created!')]";
 const CREATED_POPUP_OK_BUTTON = "//div[@id='alert-popup']/*/button[contains(text(),'OK')]";
+const DELETED_POPUP_TITLE = "//h2[contains(text(),'Deleted!')]";
+const DELETED_POPUP_OK_BUTTON = "//div[@id='alert-popup']/*/button[contains(text(),'OK')]";
+
 
 
 export class RestaurantPage extends PageBase {
@@ -72,7 +75,12 @@ export class RestaurantPage extends PageBase {
             };
         }
         return null;
-    };
-
+    }
+    checkIfDeletedPopupTitleExist = async () => {
+        return await this.page.isVisible(DELETED_POPUP_TITLE);
+    }
+    clickOkButtonInDeletedPopup = async () => {
+        await this.page.click(DELETED_POPUP_OK_BUTTON);
+    }
 
 }

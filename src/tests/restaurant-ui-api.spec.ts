@@ -22,7 +22,7 @@ describe('UI-API tests', () => {
         await browser.close();
     })
 
-    it.only('Create a new Restaurant and delete it', async function () {
+    it('Create a new Restaurant and delete it', async function () {
         //Arrange
         let restaurants: ApiResponse<Restaurant[]> = await restaurantsAPI.getRestaurants();
         const initialAmount = restaurants.data?.length;
@@ -37,6 +37,7 @@ describe('UI-API tests', () => {
             "The Happy Malawach",
             "Weizmann 135, Kfar Saba",
             4.9)
+        //'created' popup
         await resturantPage.checkIfCreatedPopupTitleExist();
         await resturantPage.clickOkButtonInCreatedPopup();
 
@@ -44,10 +45,13 @@ describe('UI-API tests', () => {
         await resturantPage.deleteRestaurantById(newRestaurantId);
         // add a small delay after the delete operation
         await new Promise(r => setTimeout(r, 1000));
+        //'deleted' popup
+        await resturantPage.checkIfDeletedPopupTitleExist();
+        await resturantPage.clickOkButtonInDeletedPopup();
+
         restaurants = await restaurantsAPI.getRestaurants();
         const getRestaurantResult = await resturantPage.getRestaurantByID(newRestaurantId);
         const getByIdResponse = await restaurantsAPI.getRestaurantById(newRestaurantId);
-
 
         //Assert
         //validate the actual restaurants amount equals to the initial amount (after deletion)
@@ -55,11 +59,9 @@ describe('UI-API tests', () => {
         expect(actualAmount).to.equal(initialAmount, 'Restaurants amount is not as expected');
         //validate that the deleted restaurant is missing from the UI
         expect(getRestaurantResult, 'Restaurant exist after it been deleted').to.be.null;
-
         //validate that the deleted restaurant is missing using the API
         expect(getByIdResponse.success, "'Restaurant exist after it been deleted'").to.be.false;
         expect(getByIdResponse.status).to.equal(404);
-
     })
 })
 
