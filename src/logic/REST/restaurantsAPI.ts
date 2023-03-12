@@ -23,4 +23,12 @@ const getRestaurantById = async (id: number): Promise<ApiResponse<Restaurant[]>>
     return HttpRequest.networkRequest({ url: baseUrl + 'restaurant', method: HttpRequest.HttpMethod.GET, queryParams: { id: id } });
 }
 
-export default { getRestaurants, resetServer, createRestaurant, getRestaurantById }
+const deleteRestaurantById = async (id: number): Promise<ApiResponse<null>> => {
+    return HttpRequest.networkRequest({ url: baseUrl + 'restaurant', method: HttpRequest.HttpMethod.DELETE, pathParams: id.toString() });
+}
+
+const updatesRestaurant = async (id: number, paramToUpdate: Object): Promise<ApiResponse<null>> => {
+    return HttpRequest.networkRequest({ url: baseUrl + 'restaurant', method: HttpRequest.HttpMethod.PATCH, pathParams: id.toString(), body: paramToUpdate });
+}
+
+export default { getRestaurants, resetServer, createRestaurant, getRestaurantById, deleteRestaurantById, updatesRestaurant }

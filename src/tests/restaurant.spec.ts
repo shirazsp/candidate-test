@@ -6,8 +6,15 @@ import { expect } from 'chai';
 import restaurantsAPI from '../logic/REST/restaurantsAPI';
 
 describe('Restaurants tests', () => {
+    //global test data
+    const myNewRest = {
+        address: "My Addess 1",
+        id: 233,
+        name: "My Restaurant",
+        score: 2.3
+    };
 
-    before('Reset restaurant server', async () => {
+    beforeEach('Reset restaurant server', async () => {
         //Arrange
         await restaurantsAPI.resetServer();
     })
@@ -24,7 +31,6 @@ describe('Restaurants tests', () => {
 
     it('Get restaurant by id', async () => {
         //Arrange
-        const myNewRest = { address: "My Addess 1", id: 233, name: "My Restaurant", score: 2.3 };
         const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
 
         //Act
@@ -46,6 +52,130 @@ describe('Restaurants tests', () => {
         expect(getByIdResponse.status).to.equal(404);
     })
 
+    it('Delete exsisting restaurant', async () => {
+        //Arrange
+        await restaurantsAPI.createRestaurant(myNewRest);
 
+        //Act
+        const deleteByIdResponse = await restaurantsAPI.deleteRestaurantById(myNewRest.id);
+        const getByIdResponse = await restaurantsAPI.getRestaurantById(myNewRest.id);
+
+        //Assert
+        expect(deleteByIdResponse.success).to.be.true;
+        expect(deleteByIdResponse.status).to.equal(200);
+        //make sure that the restauante doesn't exist
+        expect(getByIdResponse.error).to.equal("restaurant with given id not found");
+        expect(getByIdResponse.success).to.be.false;
+        expect(getByIdResponse.status).to.equal(404);
+    })
+
+    it('Delete non exsisting restaurant', async () => {
+        //Act
+        const deleteByIdResponse = await restaurantsAPI.deleteRestaurantById(9999);
+
+        //Assert
+        expect(deleteByIdResponse.error).to.equal("restaurant with given id not found");
+        expect(deleteByIdResponse.success).to.be.false;
+        expect(deleteByIdResponse.status).to.equal(404);
+    })
+
+    it('Update restaurant address', async () => {
+        //Arrange
+        //create a new restaurante
+        const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
+
+        //new address
+        const newAddress = { address: "My Address 2" };
+
+        //Act
+        const updateParamByIdResponse =
+            await restaurantsAPI.updatesRestaurant(myNewRest.id, newAddress);
+        const getByIdResponse: any =
+            await restaurantsAPI.getRestaurantById(myNewRest.id);
+
+        //Assert
+        expect(getByIdResponse.data?.address).to.equal(newAddress.address);
+        expect(updateParamByIdResponse.success).to.be.true;
+        expect(updateParamByIdResponse.status).to.equal(200);
+    })
+
+    it('Update all restaurant properties', async () => {
+        //Arrange
+        //create a new restaurante
+        const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
+
+        //new restaurant properties
+        const newId: number = 777;
+        const newProperties = {
+            address: "My Addess 2",
+            id: newId,
+            name: "Yammy",
+            score: 4.4
+        };
+
+        //Act
+        //update properties
+        const updateRestauantResponse =
+            await restaurantsAPI.updatesRestaurant(myNewRest.id, newProperties);
+        //get restaurante
+        const getByIdResponse: any =
+            await restaurantsAPI.getRestaurantById(newId);
+
+        //Assert
+        expect(updateRestauantResponse.success).to.be.true;
+        expect(updateRestauantResponse.status).to.equal(200);
+
+        expect(getByIdResponse.data?.address).to.deep.equal(
+            newProperties.address, "Restaurants address is not as expected");
+        expect(getByIdResponse.data?.id).to.deep.equal(
+            newProperties.id, "Restaurants id is not as expected");
+        expect(getByIdResponse.data?.name).to.deep.equal(
+            newProperties.name, "Restaurants name is not as expected");
+        expect(getByIdResponse.data?.score).to.deep.equal(
+            newProperties.score, "Restaurants score is not as expected");
+    })
+
+
+    it('Update non existing restaurant property', async () => {
+        //Arrange
+        //create a new restaurante
+        const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
+
+        //new unexisted property
+        const newproperty = { chef: "Chaim Cohen" };
+
+        //Act
+        const updateParamByIdResponse =
+            await restaurantsAPI.updatesRestaurant(myNewRest.id, newproperty);
+        const getByIdResponse =
+            await restaurantsAPI.getRestaurantById(myNewRest.id);
+
+        //Assert
+        expect(getByIdResponse.data).to.not.have.property('chef');
+        expect(getByIdResponse.success).to.be.false;
+        expect(getByIdResponse.status).to.not.equal(200);
+    })
+
+    it('Create a new restaurant', async () => {
+        //Act
+        const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
+
+        //Assert
+        expect(createResponse.success).to.be.true;
+        expect(createResponse.status).to.equal(200);
+    })
+
+    it('Create a new restaurant with existing id', async () => {
+        //create a restaurant
+        await restaurantsAPI.createRestaurant(myNewRest);
+
+        //Act
+        //add a new restaurante with the same id
+        const createResponse = await restaurantsAPI.createRestaurant(myNewRest);
+
+        //Assert
+        expect(createResponse.success).to.be.false;
+        expect(createResponse.status).to.not.equal(200);
+    })
 
 })
